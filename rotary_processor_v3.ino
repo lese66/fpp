@@ -18,11 +18,10 @@
                       by sterretje
             Timer     https://forum.arduino.cc/t/millis-vs-timestamp/885015
 
-  LICENCE   GNU General Public License. Copyright(c) 2024, Luis Samaniego: All rights reserved.
+  LICENCE   CC BY-SA
 
-  AUTHOR    Luis Samaniego, 2024/01
-  UPDATES   2024/03: Improvement of the timming.
-  VERSION   3.0 
+  AUTHOR    Luis Samaniego, 2024/01. COPYRIGHT: All Rights Reserved 2024.
+  VERSION   3.0
 
 */
 
@@ -53,12 +52,12 @@ const int MOTOR_CW = 3;
 const int MOTOR_CCW = 4;
 
 // LCD
-const byte ROWS = 4;  //  Constants for row and column sizes
+const byte ROWS = 4;                      //  Constants for row and column sizes
 const byte COLS = 4;
-const int I2C_addr = 0x27;  //  Define I2C Address - found with scanner
+const int I2C_addr = 0x27;                //  Define I2C Address - found with scanner
 
 // Keypad
-char hexaKeys[ROWS][COLS] = {  // Array to represent keys on keypad
+char hexaKeys[ROWS][COLS] = {             // Array to represent keys on keypad
   { '1', '2', '3', 'A' },
   { '4', '5', '6', 'B' },
   { '7', '8', '9', 'C' },
@@ -66,49 +65,49 @@ char hexaKeys[ROWS][COLS] = {  // Array to represent keys on keypad
 };
 
 // Development
-const unsigned long tMinutesMax = 15;
-const unsigned long tSecondsMax = 60;
+// const unsigned long tMinutesMax = 15;
+// const unsigned long tSecondsMax = 60;
 
 // Tank
-const int deltaMax   = 17;  // max adjustement of the angular velocity of the tank [RPM]
-const int wTankHigh  = 84;  // max angular velocity of the tank = max motor velocity [RPM]
-const int wCorFactor =  0;  // correction factor based on measuments
+const int deltaMax   = 17;                // max adjustement of the angular velocity of the tank [RPM]
+const int wTankHigh  = 84;                // max angular velocity of the tank = max motor velocity [RPM]
+const int wCorFactor =  0;                // correction factor based on measuments
+const int nFullRev   =  3;                // number of full revolutions of the tank, any direction
 
 // Motor speed
-const int wMotorMax = 255;        // max motor speed index (in Arduino). Motor max 84 RPM
-
-unsigned long theCycleTiming = 3000UL;  // total time to rotate in a CW or CCW cycle [ms]
-unsigned long accelCycleTime = 300UL;   // [0,accelCycleTime] ms.              Acceleration time, 10% total time [s]
-unsigned long breakCycleTime = 2700UL;  // [breakCycleTime,theCycleTiming] ms. Deacceleration time, 10% total time [s]
+const int wMotorMax = 255;                // max motor speed index (in Arduino). Motor max 84 RPM
+unsigned long accelCycleTime = 300UL;     // [0,accelCycleTime] ms.              Acceleration time, 10% total time [s]
 
 // ---------------------
 // GLOBAL VARIABLES
 // ---------------------
 
 // Potentiometer (rotational speed control)
-int potValue;      // analog pot reading
-int potValueLast;  // analog pot reading
+int potValue;                             // analog pot reading
+int potValueLast;                         // analog pot reading
 
 // Keypad
-char customKey;  // Character to hold key input
+char customKey;                           // Character to hold key input
 
 // Tank
-int delta;  // Change in rotor angular speed [RPM]
-int wTankLow;   // min angular speed of the tank [RPM]
-int wTank;      // adjusted angular speed of the tank [RPM]
-float wMean;    // average angular speed per cycle [RPM]
-int wTankInt;   // (75) default Jobo recommendation in [RPM]
+int delta;                                // Change in rotor angular speed [RPM]
+int wTankLow;                             // min angular speed of the tank [RPM]
+int wTank;                                // adjusted angular speed of the tank [RPM]
+float wMean;                              // average angular speed per cycle [RPM]
+int wTankInt;                             // (75) default Jobo recommendation in [RPM]
 
 // Motor
-int wMotor;                             // motor speed index in the range [0,255] = f(theSpeed)
-unsigned long theTiming;                // total time to rotate in [s]
+unsigned long theTiming;                  // total time to rotate in [s]
+unsigned long theCycleTiming;             // total time to rotate in a CW or CCW cycle [ms]                              e.g. 3000UL
+unsigned long breakCycleTime;             // [breakCycleTime,theCycleTiming] ms. Deacceleration time, 10% total time [s] e.g. 2700UL
 
-int wMotorMin;                          // min motor speed index (~ 50% of max). Motor min 50 RPM
-unsigned long motorRunStartTime;  // the 'time' that the motor started running
+int wMotor;                               // motor speed index in the range [0,255] = f(theSpeed)
+int wMotorMin;                            // min motor speed index (~ 50% of max). Motor min 50 RPM
+unsigned long motorRunStartTime;          // the 'time' that the motor started running
 
 
 // Development control
-unsigned long tMinutes = 5;  // Default prewarming time
+unsigned long tMinutes = 5;               // Default prewarming time
 unsigned long tSeconds = 0;
 
 // States of the application
@@ -130,8 +129,8 @@ const int LPWM = 11;
 const int en = 2, rw = 1, rs = 0, d4 = 4, d5 = 5, d6 = 6, d7 = 7, bl = 3;
 
 // Keypad
-byte rowPins[ROWS] = { 9, 8, 7, 6 };  //connect to the row pinouts of the keypad
-byte colPins[COLS] = { 5, 4, 3, 2 };  //connect to the column pinouts of the keypad
+byte rowPins[ROWS] = { 9, 8, 7, 6 };      //connect to the row pinouts of the keypad
+byte colPins[COLS] = { 5, 4, 3, 2 };      //connect to the column pinouts of the keypad
 
 // ---------------------
 // CREATE OBJECTS
@@ -155,16 +154,17 @@ void setup() {
   Serial.println("20x4 display");
 
   // PINS
-  pinMode(POT_pin, INPUT);  // set potentiometer input
-  pinMode(RPWM, OUTPUT);    // set motor connections as outputs
+  pinMode(POT_pin, INPUT);                // set potentiometer input
+  pinMode(RPWM, OUTPUT);                  // set motor connections as outputs
   pinMode(LPWM, OUTPUT);
 
   // Initial motor state set to stop
-  analogWrite(RPWM, 0);  // Stop = 0
+  analogWrite(RPWM, 0);                   // Stop = 0
   analogWrite(LPWM, 0);
 
   // Initialize Variables
-  theTiming = tMinutes * 60UL + tSeconds;  // Default prewarming time in [s]
+  
+  theTiming = tMinutes * 60UL + tSeconds; // Default prewarming time in [s]
   delta = 0;
   wTankInt = wTankHigh - deltaMax;
   wTankLow = wTankInt - deltaMax;
@@ -396,11 +396,15 @@ void setTankSpeed() {
     // estimate change of tank speed based on Pot. reading
     delta = map(potValue, 0, 1023, -deltaMax, deltaMax);
     wTank = wTankInt + delta;
-    //wTankLow = wTankHigh - 2 * deltaMax;
+    theCycleTiming = (nFullRev * 60000) / wTank  + accelCycleTime;
+    breakCycleTime = theCycleTiming - accelCycleTime;
+
     wMean = (float)(wTank * (theCycleTiming - accelCycleTime) / theCycleTiming);
 
     // Serial.print("wMean= ");
     // Serial.println(wMean);
+    // Serial.print("theCycleTiming= ");
+    // Serial.println(theCycleTiming);
 
     if (currentState == ST_WAIT) {
       lcd.setCursor(7, 2);
