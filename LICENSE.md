@@ -1,143 +1,122 @@
-
 # LICENSE
 
-[TOC]
+## Project
 
-## COPYRIGHT
-
-This file is part of the Luis Samaniego's library for analog
-photography. FPP is a C code for the Arduino UNO microcontroler that
-automatize a film or paper development processor designed and made by
+This file is part of the FPP3 film/paper processor project.  
+FPP3 is Arduino C/C++ code for the Arduino UNO microcontroller that
+automates a film or paper development processor designed and built by
 Luis Samaniego.
 
+SPDX-License-Identifier: GPL-3.0-or-later
 
-## COPYRIGHT HOLDERS
+---
 
-Copyright(c) 2024, Luis Samaniego: All rights reserved.
+## Copyright
 
-The code is a property of:
+Copyright (c) 2024, Luis Samaniego
 
-> Luis Samaniego
-> Leipzig
+All rights reserved, except as granted by the license terms below.
 
-The FPP Arduino Sketch (code) is free software. You can redistribute
-it and/or modify it under the terms of the GNU General Public License
-as published by the free Software Foundation either version 3 of the
-License, or (at your option) any later version.
+---
 
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
+## License for FPP3 source code
 
-You received a copy of the GNU Lesser General Public License along
-with the FPP source. It can be found in the file `COPYING` provided
-with this software.  The complete GNU license text can also be found
-at <http://www.gnu.org/licenses/>.
+FPP3 is free software: you may use, study, modify, and redistribute it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
+You may use FPP3 in commercial or non-commercial products and services,
+provided that all conditions of the GNU General Public License are
+respected. In particular, if you distribute a device, binary, or
+modified version that is based on this code, you must also provide the
+corresponding complete source code (including your modifications) under
+the same GPL terms.
 
-## Contact
+FPP3 is provided in the hope that it will be useful, but without any
+warranty. This includes, without limitation, any implied warranties of
+merchantability, fitness for a particular purpose, or non-infringement.
+You are responsible for evaluating its suitability for your application,
+for any calibration, and for safe operation of all connected hardware
+(motors, relays, high-current circuits, mains-powered equipment, etc.).
 
-- Luis Samanoego (lese66@gmail.com)
+A full copy of the GNU General Public License, version 3, is available
+from the Free Software Foundation:
 
-> https://www.luis-samaniego.eu/
+  https://www.gnu.org/licenses/gpl-3.0.en.html
 
+When redistributing FPP3 (source or binary), you must include:
 
-## Redistribution
+* This license file, unchanged, and
+* A copy of the full GNU GPL v3 text, or a URL pointing to it, as
+  required by the GPL.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
+---
 
--  Redistributions of source code must retain the above
-   copyright notice, this list of conditions, the following disclaimer
-   and the modification conditions.
--  Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions, the following disclaimer and the
-   modification conditions in the documentation and/or other materials
-   provided with the distribution.
--  The name of Luis Samaniego nor the names of its contributors
-   may not be used to endorse or promote products derived from this
-   software without specific prior written permission.
--  Redistributions of source code are allowed for non-professional
-   purposes ONLY. For commercial applications you need to consult Luis
-   Samaniego.
-   
-## Modification
+## Files covered by this license
 
-If the software is modified to produce derivative works, such modified
-software should be clearly marked, so as not to confuse it with the
-version available from Luis Samaniego. The following sources are to be
-acknowledged:
+Unless otherwise noted in a file header, all source code, configuration
+files, and documentation in this repository are licensed under
+GPL-3.0-or-later as described above.
 
-Original FPP conceptualization:
-> https://www.luis-samaniego.eu/fpp
+If a file carries an explicit license notice that differs from this
+section, that file's own notice takes precedence for that file.
 
-## Breach of the Copyright
+---
 
-The following are the potential causes for the Breach of mHM Copyright.
+## Third-party libraries and notices
 
--   Deletion of the original copyright in the derived codes.
--   Improper citation of the used material in the derived codes.
-    See the notice above.
--   Deletion of the original author's list and the development history
-    (partially or in totality).
--   Changing any paragraph of the GNU licence provided.
--   Not inclusion of the GNU licence in the derived code.
--   Not citing the suggested papers in any written work that is based on
-    the FPP code or derived software.
+FPP3 uses a number of third-party libraries. These are not authored by
+Luis Samaniego and remain under their respective licenses. You must
+observe those licenses in addition to the FPP3 project license.
 
-If the derived FPP code has breached the Copyright, the Copyright Holder
-will request the repository provider (e.g., GitHub) to take down the
-respective code following the corresponding guidelines. In the case of GitHub,
-this is specified at
+### Arduino core and standard libraries
 
-https://docs.github.com/en/site-policy/content-removal-policies/dmca-takedown-policy
+Arduino core and standard libraries (including `Wire`, `EEPROM`, and
+others) are provided under their respective licenses by Arduino AG /
+Arduino LLC and other contributors. See the Arduino documentation and
+source repositories for license details.
 
+### Wire library notice
 
-## Disclaimer of Warranty
+The Arduino `Wire` (I2C/TWI) library is written by Nicholas Zambetti
+and others. It is provided under the terms indicated in the Arduino
+distribution. See the Arduino source tree for the exact license text.
 
-THERE IS NO WARRANTY FOR THIS SOFTWARE, TO THE EXTENT PERMITTED BY
-APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE LUIS
-SAMANIEGO AND CONTRIBUTORS PROVIDE THIS SOFTWARE "AS IS" WITHOUT
-WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND
-PERFORMANCE OF THE SOFTWARE IS WITH YOU. SHOULD THE SOFTWARE PROVE
-DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR
-CORRECTION.
+### EEPROM library notice
 
+The Arduino `EEPROM` library is part of the official Arduino core and
+is distributed under the license terms provided by Arduino AG /
+Arduino LLC and contributors. See the Arduino IDE or GitHub source
+repositories for the exact license text.
 
-## Limitation of Liability
+### New LiquidCrystal library notice
 
-IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-WILL LUIS SAMANIEGO AND CONTRIBUTORS OR ANY OTHER PARTY WHO MODIFIES
-AND/OR CONVEYS THE SOFTWARE AS PERMITTED BY GNU GENERAL PUBLIC
-LICENSE, BE LIABLE FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL,
-INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR
-INABILITY TO USE THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF
-DATA, OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY THE
-USER OR THIRD PARTIES OR A FAILURE OF THE SOFTWARE TO OPERATE WITH ANY
-OTHER PROGRAMS), EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+The "New LiquidCrystal" library by F. Malpartida is licensed under the
+GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any
+later version.
 
+For details, see the project page and original license notice:
+  https://www.gnu.org/licenses/gpl-3.0.en.html
 
-## Used and included libraries
+### Keypad library notice
 
- - Wire.h
- - LiquidCrystal_I2C.h
- - Keypad.h
+The Arduino Keypad library is provided under the GNU General Public
+License. See the original library distribution for the full license
+text and any additional conditions.
 
-### Wire licence notice
+---
 
-Written by by Nicholas Zambetti and provided with GNU General Public License.
+## Contributions
 
-### New LiquidCrystal licence notice
+By submitting a contribution (patch, pull request, or similar) to this
+project, you agree that your contribution will be licensed under
+GPL-3.0-or-later, so that it can be redistributed with the rest of the
+code under a consistent copyleft license.
 
-New LiquidCrystal Library by F. Malpartida is
-licensed under of the GNU General Public License as published by the
-Free Software Foundation, either version 3 of the License, or any
-later version: [[https://www.gnu.org/licenses/gpl-3.0.en.html|GPL v3.0]]
+If you include code from other sources, you are responsible for
+ensuring that its license is compatible with GPL-3.0-or-later and that
+all required notices are preserved.
 
-### Keypad licence notice
-
-Provided wiuth GNU GENERAL PUBLIC LICENSE
+---
