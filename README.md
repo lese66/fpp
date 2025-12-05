@@ -13,7 +13,7 @@ off on demand), bidirectional rotation with smooth acceleration/braking, and
 The source and file structure has been written by the author based on
 the references provided in the code. Many suggestions and improvements
 have been contributed by several members of the Arduino Forum and
-other sources.  [oai_citation:0‡README.md](sediment://file_00000000ff9c720ab894926cbdbc8595)
+other sources. 
 
 ---
 
