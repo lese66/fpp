@@ -19,7 +19,7 @@
             Timer     https://forum.arduino.cc/t/millis-vs-timestamp/885015
 
   Copyright (c) 2024 Luis Samaniego
-  Licensed under the MIT License. See LICENSE file in the project root for details.
+  Licensed under the GNU License. See LICENSE file in the project root for details.
   AUTHOR    Luis Samaniego
   HISTORY   2024/01.  Original code (3.0)
             2025/12.  Bugs and improvements
