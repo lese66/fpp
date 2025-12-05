@@ -9,6 +9,6 @@ other sources.
 
 ## Install
 
-Load the sketct in teh Arduino UNO, compile it and
+Load the sketct in the Arduino UNO, compile it and
 upload. The USB port has to be connected to the FPP controloer.
 # lese66
