@@ -83,6 +83,7 @@ stateDiagram-v2
       *       backlight ON
       *+#     backlight OFF
     end note
+```
 
 ---
 
