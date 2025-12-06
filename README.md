@@ -63,13 +63,14 @@ stateDiagram-v2
     ST_WAIT --> ST_STARTMOTOR: C
     ST_WAIT --> ST_IDLE: D
 
-    ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # or *
-    ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # or *
+    ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # (confirm)\n* (cancel)
+    ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # (confirm)\n* (cancel)
 
     ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(MOTOR_START)
     ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(MOTOR_FORCESTOP)
 
-    ST_WAIT --> ST_WAIT: 1..9 recall\n# then 1..9 store\n* / * then #
+    ST_WAIT --> ST_WAIT: 1..9 recall\n# then 1..9 store\n* / * then # backlight
+
 
 ---
 
