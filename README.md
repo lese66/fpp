@@ -51,20 +51,9 @@ Pin assignments are defined at the top of the sketch:
 - LCD I2C address: 0x27
 
 ---
+## Controller state machine
 
-## Software overview
-
-Main components:
-
-- State machine with the following states (see figure):
-
-  - `ST_DISPLAY_MAINMENU`
-  - `ST_WAIT`
-  - `ST_SETTIMING_M` (edit minutes)
-  - `ST_SETTIMING_S` (edit seconds)
-  - `ST_STARTMOTOR`
-  - `ST_IDLE`
-
+```mermaid
 stateDiagram-v2
     [*] --> ST_DISPLAY_MAINMENU
     ST_DISPLAY_MAINMENU --> ST_WAIT: displayMenu()
@@ -82,6 +71,20 @@ stateDiagram-v2
 
     ST_WAIT --> ST_WAIT: 1..9 recall\n# then 1..9 store\n* / * then #
 
+---
+
+## Software overview
+
+Main components:
+
+- State machine with the following states (see figure):
+
+  - `ST_DISPLAY_MAINMENU`
+  - `ST_WAIT`
+  - `ST_SETTIMING_M` (edit minutes)
+  - `ST_SETTIMING_S` (edit seconds)
+  - `ST_STARTMOTOR`
+  - `ST_IDLE`
 
 - Motor control:
   - Bidirectional rotation (CW / CCW)
