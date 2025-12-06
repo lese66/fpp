@@ -53,10 +53,6 @@ Pin assignments are defined at the top of the sketch:
 ---
 ## Controller state machine
 
-## Controller state machine
-
-## Controller state machine
-
 ```mermaid
 stateDiagram-v2
     direction LR
