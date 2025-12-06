@@ -70,7 +70,7 @@ stateDiagram-v2
     ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(MOTOR_FORCESTOP)
 
     ST_WAIT --> ST_WAIT: 1..9 recall\n# then 1..9 store\n* / * then # backlight
-
+```
 
 ---
 
