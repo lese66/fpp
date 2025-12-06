@@ -53,23 +53,34 @@ Pin assignments are defined at the top of the sketch:
 ---
 ## Controller state machine
 
+## Controller state machine
+
 ```mermaid
 stateDiagram-v2
+    direction LR
+
     [*] --> ST_DISPLAY_MAINMENU
     ST_DISPLAY_MAINMENU --> ST_WAIT: displayMenu()
 
-    ST_WAIT --> ST_SETTIMING_M: A
-    ST_WAIT --> ST_SETTIMING_S: B
-    ST_WAIT --> ST_STARTMOTOR: C
-    ST_WAIT --> ST_IDLE: D
+    ST_WAIT --> ST_SETTIMING_M: A (minutes)
+    ST_WAIT --> ST_SETTIMING_S: B (seconds)
+    ST_WAIT --> ST_STARTMOTOR: C (start)
+    ST_WAIT --> ST_IDLE: D (stop)
 
-    ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # (confirm)\n* (cancel)
-    ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # (confirm)\n* (cancel)
+    ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # confirm / * cancel
+    ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # confirm / * cancel
 
-    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(MOTOR_START)
-    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(MOTOR_FORCESTOP)
+    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(START)
+    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(FORCESTOP)
 
-    ST_WAIT --> ST_WAIT: 1..9 recall\n# then 1..9 store\n* / * then # backlight
+    ST_WAIT --> ST_WAIT: stay in WAIT
+
+    note right of ST_WAIT
+      1..9    recall stored step
+      #+1..9  store current time in step
+      *       backlight ON
+      *+#     backlight OFF
+    end note
 ```
 
 ---
