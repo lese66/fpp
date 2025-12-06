@@ -56,7 +56,7 @@ Pin assignments are defined at the top of the sketch:
 
 Main components:
 
-- State machine with the following states:
+- State machine with the following states (see figure):
 
   - `ST_DISPLAY_MAINMENU`
   - `ST_WAIT`
@@ -64,6 +64,24 @@ Main components:
   - `ST_SETTIMING_S` (edit seconds)
   - `ST_STARTMOTOR`
   - `ST_IDLE`
+
+stateDiagram-v2
+    [*] --> ST_DISPLAY_MAINMENU
+    ST_DISPLAY_MAINMENU --> ST_WAIT: displayMenu()
+
+    ST_WAIT --> ST_SETTIMING_M: A
+    ST_WAIT --> ST_SETTIMING_S: B
+    ST_WAIT --> ST_STARTMOTOR: C
+    ST_WAIT --> ST_IDLE: D
+
+    ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # or *
+    ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # or *
+
+    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(MOTOR_START)
+    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(MOTOR_FORCESTOP)
+
+    ST_WAIT --> ST_WAIT: 1..9 recall\n# then 1..9 store\n* / * then #
+
 
 - Motor control:
   - Bidirectional rotation (CW / CCW)
