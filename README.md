@@ -55,6 +55,8 @@ Pin assignments are defined at the top of the sketch:
 
 ## Controller state machine
 
+## Controller state machine
+
 ```mermaid
 stateDiagram-v2
     direction LR
@@ -73,7 +75,7 @@ stateDiagram-v2
     ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(START)
     ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(FORCESTOP)
 
-    ST_WAIT --> ST_WAIT: stay in WAIT
+    ST_WAIT --> ST_WAIT
 
     note right of ST_WAIT
       1..9    recall stored step
@@ -81,7 +83,6 @@ stateDiagram-v2
       *       backlight ON
       *+#     backlight OFF
     end note
-```
 
 ---
 
