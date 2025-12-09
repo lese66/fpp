@@ -143,6 +143,10 @@ bool backlightOn = true;           // tracks whether backlight is on
 bool awaitOffCombo = false;        // true after '*' when waiting for '#'
 unsigned long comboStartTime = 0;  // when '*' was pressed (for timeout)
 
+// After run finishes, we wait a few seconds and then redraw the menu
+bool showMenuAfterStop    = false;
+unsigned long stopTimeMs  = 0;
+
 // ---------------------
 // DEFINE PINS
 // ---------------------
@@ -257,7 +261,7 @@ void setup() {
   delta = 0;
   wTankInt = wTankHigh - deltaMax;
   wTankLow = wTankInt - deltaMax;
-  wTank = wTankInt;                        // start at nominal RPM
+  wTank = wTankInt;  // start at nominal RPM
   wMotorMin = wMotorMax * wTankLow / wTankHigh;
 
   // initialize cycle times here
@@ -280,6 +284,16 @@ void loop() {
   // countdown timer
   if (motorRunStartTime > 0) {
     displayCounterMenu();
+  }
+
+  // After a timed run finishes, show the main menu again after ~3 s
+  if (showMenuAfterStop && motorRunStartTime == 0) {
+    unsigned long now = millis();
+    if (now - stopTimeMs >= 3000UL) {   // 3 seconds after stop
+      displayMenu();
+      currentState      = ST_WAIT;
+      showMenuAfterStop = false;
+    }
   }
 
   //Serial.println(currentState);
@@ -538,14 +552,15 @@ void displayTimingMenuS() {
 void displayCounterMenu() {
 
   static unsigned long nextCounterUpdate = 0;
-  static unsigned long currTime;
-  static unsigned long elapsedTime;
-  static unsigned long remainingTime;
-  static unsigned long lastRemaining = 0;
+  static unsigned long lastRemaining     = 0;
+
+  unsigned long currTime;
+  unsigned long elapsedTime;
+  unsigned long remainingTime;
   int t1, t2;
   char textbuffer[21];
 
-  currTime = millis();
+  currTime    = millis();
   elapsedTime = currTime - motorRunStartTime;
 
   // avoid underflow if we are at or past the end
@@ -557,16 +572,20 @@ void displayCounterMenu() {
 
   // ---------- 5 s warning tone (one-shot, DOES NOT stop motor) ----------
   // Fire once when we cross from >5 s to <=5 s
-  if (theTiming > 5 && remainingTime > 0 && remainingTime <= 5000UL && lastRemaining > 5000UL && !beepActive) {
+  if (theTiming > 5 &&
+      remainingTime > 0 &&
+      remainingTime <= 5000UL &&
+      lastRemaining > 5000UL &&
+      !beepActive) {
 
-    digitalWrite(BUZZER_PIN, HIGH);  // active buzzer ON
-    beepActive = true;
-    beepEndTime = millis() + 200UL;  // ~200 ms beep (quieter in time)
+    digitalWrite(BUZZER_PIN, HIGH);      // active buzzer ON
+    beepActive  = true;
+    beepEndTime = currTime + 200UL;      // ~200 ms beep
   }
 
   // Switch buzzer off when its time window is over
-  if (beepActive && millis() >= beepEndTime) {
-    digitalWrite(BUZZER_PIN, LOW);  // active buzzer OFF
+  if (beepActive && currTime >= beepEndTime) {
+    digitalWrite(BUZZER_PIN, LOW);       // active buzzer OFF
     beepActive = false;
   }
 
@@ -575,20 +594,16 @@ void displayCounterMenu() {
   // -------------------------------------------------------------------
 
   // update LCD once per second
+  if (currTime >= nextCounterUpdate) {
+    nextCounterUpdate = currTime + 1000UL;
 
-  // get remaning min:sec
-  if (currTime > nextCounterUpdate) {
-    nextCounterUpdate += 1000;
-    t1 = (remainingTime / 1000) / 60;
-    t2 = (remainingTime / 1000) % 60;
+    // get remaining min:sec
+    t1 = (remainingTime / 1000UL) / 60;
+    t2 = (remainingTime / 1000UL) % 60;
 
-    // ---- clear whole line 3 ----
+    // ---- left side: Ravg = xxx/min (fixed width) ----
     lcd.setCursor(0, 3);
-    lcd.print("                    ");  // 20 spaces
-
-    // ---- left side: Ravg ----
-    lcd.setCursor(0, 3);
-    sprintf(textbuffer, "Ravg = %d/min", (int)(wMean));
+    sprintf(textbuffer, "Ravg = %2d/min  ", (int)(wMean));
     lcd.print(textbuffer);
 
     // ---- right side: time at columns 15..19 ----
@@ -815,6 +830,11 @@ void runMotor(MotorCommand command) {
     currentStateMotor = MOTOR_FORCESTOP;
     digitalWrite(BUZZER_PIN, LOW);  // OFF
     beepActive = false;
+
+    // remember stop time so we can restore the menu a bit later
+    showMenuAfterStop = true;
+    stopTimeMs        = now;
+
     return;
   }
 
