@@ -259,6 +259,8 @@ stateDiagram-v2
 
 ```
 
+Changing Displays:
+
 ```mermaid
 flowchart LR
   DEVPG[PAGE_DEV] <-->|D| TEMPPG[PAGE_TEMP]
