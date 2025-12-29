@@ -79,10 +79,7 @@ Search and install:
 - DS18B20 DQ  -> chosen Arduino pin (your "DG" / data pin)
 - Pull-up resistor between DQ and +5V:
   - Typical: 4.7 kOhm (5% OK)
-  - 5.1 kOhm usually also works for short runs; 4.7 k is the default recommendation.
-
-Optional (recommended with longer cables / noisy environment):
-- 100 nF ceramic capacitor between +5V and GND near the sensor side.
+  - 100 nF ceramic capacitor between +5V and GND near the sensor side.
 
 -------------------------------------------------------------------------------
 
