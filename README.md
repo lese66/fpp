@@ -218,16 +218,16 @@ stateDiagram-v2
     ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # confirm / * cancel
     ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # confirm / * cancel
 
-    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(START)\n runMode=DEV
-    ST_WAIT --> ST_IDLE: (DEV) C (while running)\n Stop
-    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(FORCESTOP)\n runMode=IDLE
+    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(START) \n runMode=DEV
+    ST_WAIT --> ST_IDLE: (DEV) C (while running) \n Stop
+    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(FORCESTOP) \n runMode=IDLE
 
     %% -------------------------
     %% TEMP PAGE (PAGE_TEMP)
     %% -------------------------
     ST_WAIT --> ST_PREHEAT: (TEMP) C Go/Stop (PREHEAT)
-    ST_PREHEAT --> ST_WAIT: runMode=PREHEAT\n motor single dir
-    ST_WAIT --> ST_IDLE: (TEMP) C (while preheating)\nStop
+    ST_PREHEAT --> ST_WAIT: runMode=PREHEAT \n motor single dir
+    ST_WAIT --> ST_IDLE: (TEMP) C (while preheating) \n Stop
 
     ST_WAIT --> ST_DISPLAY_MAINMENU: (TEMP) D page->DEV
 
