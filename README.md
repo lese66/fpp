@@ -218,15 +218,15 @@ stateDiagram-v2
     ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # confirm / * cancel
     ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # confirm / * cancel
 
-    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(START)\nrunMode=DEV
-    ST_WAIT --> ST_IDLE: (DEV) C (while running)\nStop
-    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(FORCESTOP)\nrunMode=IDLE
+    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(START)\n runMode=DEV
+    ST_WAIT --> ST_IDLE: (DEV) C (while running)\n Stop
+    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(FORCESTOP)\n runMode=IDLE
 
     %% -------------------------
     %% TEMP PAGE (PAGE_TEMP)
     %% -------------------------
     ST_WAIT --> ST_PREHEAT: (TEMP) C Go/Stop (PREHEAT)
-    ST_PREHEAT --> ST_WAIT: runMode=PREHEAT\nmotor single dir
+    ST_PREHEAT --> ST_WAIT: runMode=PREHEAT\n motor single dir
     ST_WAIT --> ST_IDLE: (TEMP) C (while preheating)\nStop
 
     ST_WAIT --> ST_DISPLAY_MAINMENU: (TEMP) D page->DEV
@@ -263,43 +263,10 @@ Changing Displays:
 
 ```mermaid
 flowchart LR
-  BOOT([Boot]) --> DISP[ST_DISPLAY_MAINMENU<br/>render page and menu]
-  DISP --> WAIT[ST_WAIT<br/>key handling]
-
-  %% Standard keys (DEV page)
-  WAIT -->|A minutes| SETM[ST_SETTIMING_M]
-  WAIT -->|B seconds| SETS[ST_SETTIMING_S]
-  WAIT -->|C start stop| START[ST_STARTMOTOR or ST_PREHEAT]
-  WAIT -->|D page| TOG[Toggle page DEV TEMP]
-
-  SETM --> DISP
-  SETS --> DISP
-  START --> DISP
-  TOG --> DISP
-
-  %% DEV shortcuts
-  WAIT -->|DEV 1..9| DEVREC[Recall stored step]
-  WAIT -->|DEV # then 1..9| DEVSTO[Store current time as step]
-  DEVREC --> DISP
-  DEVSTO --> DISP
-
-  %% TEMP profile control
-  WAIT -->|TEMP idle A then wait| PROFN[Next profile]
-  WAIT -->|TEMP idle B| PROFB[Prev profile]
-  WAIT -->|TEMP # digits #| PROFJ[Jump profile by ID]
-  PROFN --> DISP
-  PROFB --> DISP
-  PROFJ --> DISP
-
-  %% CAL entry (TEMP only)
-  WAIT -->|TEMP idle A then B fast| CAL[ST_CAL]
-  CAL --> DISP
-
-  %% Backlight
-  WAIT -->|star| BLON[Backlight on]
-  WAIT -->|star then hash| BLOFF[Backlight off]
-  BLON --> DISP
-  BLOFF --> DISP
+  DEV[PAGE_DEV] <-->|D| TEMP[PAGE_TEMP]
+  DEV --> DEVK["A: minutes\n B: seconds\n C: Go/Stop\n 1..9: recall\n #: store"]
+  TEMP -->
+  TEMPK["A: next\n B: prev\n A+B: CAL (IDLE)\n C: preheat\n #..#: jump\n 0: diag"]
 ```
  
  
