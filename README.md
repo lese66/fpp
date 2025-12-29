@@ -274,8 +274,8 @@ flowchart LR
 
   TEMP --> TEMPK["A: next<br/>B: prev<br/>A+B: CAL (IDLE)<br/>C: preheat<br/>#..#: jump<br/>0: diag"]
 
-  TEMP -->|A+B (IDLE)| CAL
-  CAL --> CALK["A: +0.1<br/>B: -0.1<br/>C: Save<br/>D: Exit (discard)<br/>#: next item<br/>*: prev item"]
+  TEMP -->|A+B IDLE| CAL
+  CAL --> CALK["A: +0.1<br/>B: -0.1<br/>C: Save<br/>D: Exit discard<br/>#: next item<br/>*: prev item"]
   CAL -->|D| TEMP
 ```
  
