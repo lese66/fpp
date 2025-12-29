@@ -232,6 +232,7 @@ stateDiagram-v2
   ST_IDLE       --> ST_DISPLAY_MAINMENU
 
   ST_CAL --> ST_DISPLAY_MAINMENU : D (Exit) / C (Save)
+```
 
 -------------------------------------------------------------------------------
 
