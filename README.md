@@ -200,8 +200,6 @@ Operational meaning:
 
 ## State machine (high-level)
 
-GitHub renders Mermaid diagrams in Markdown.
-
 ```mermaid
 stateDiagram-v2
     direction LR
@@ -261,6 +259,7 @@ stateDiagram-v2
 
 ```
 
+...
 flowchart LR
   DEVPG[PAGE_DEV] <-->|D| TEMPPG[PAGE_TEMP]
 
@@ -269,6 +268,10 @@ flowchart LR
 
   GLOBAL["Global:\n*: backlight on\n* then #: backlight off"] --- DEVPG
   GLOBAL --- TEMPPG
+  
+...
+ 
+ 
 -------------------------------------------------------------------------------
 
 ## How it operates (typical workflow)
