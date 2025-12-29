@@ -263,58 +263,43 @@ Changing Displays:
 
 ```mermaid
 flowchart LR
-
-  BOOT([Boot]) --> DISP[ST_DISPLAY_MAINMENU<br/>render page + menu]
+  BOOT([Boot]) --> DISP[ST_DISPLAY_MAINMENU<br/>render page and menu]
   DISP --> WAIT[ST_WAIT<br/>key handling]
 
-  WAIT --> SETM[ST_SETTIMING_M<br/>set minutes]
-  WAIT --> SETS[ST_SETTIMING_S<br/>set seconds]
-  WAIT --> START[ST_STARTMOTOR]
-  WAIT --> IDLE[ST_IDLE<br/>force stop]
+  %% Standard keys (DEV page)
+  WAIT -->|A minutes| SETM[ST_SETTIMING_M]
+  WAIT -->|B seconds| SETS[ST_SETTIMING_S]
+  WAIT -->|C start stop| START[ST_STARTMOTOR or ST_PREHEAT]
+  WAIT -->|D page| TOG[Toggle page DEV TEMP]
 
   SETM --> DISP
   SETS --> DISP
   START --> DISP
-  IDLE --> DISP
-  WAIT --> DISP
-
-  %% Page toggle (idle)
-  WAIT -->|D (idle)| TOG[Toggle page<br/>DEV <-> TEMP]
   TOG --> DISP
 
-  %% DEV page shortcuts
-  WAIT -->|DEV: 1..9| DEVREC[Recall stored step<br/>t = step[i]]
-  WAIT -->|DEV: # then 1..9| DEVSTO[Store current time<br/>into step[i]]
+  %% DEV shortcuts
+  WAIT -->|DEV 1..9| DEVREC[Recall stored step]
+  WAIT -->|DEV # then 1..9| DEVSTO[Store current time as step]
   DEVREC --> DISP
   DEVSTO --> DISP
 
-  %% TEMP page profile selection
-  WAIT -->|TEMP+IDLE: A (after 800ms)| PROFN[Next profile]
-  WAIT -->|TEMP+IDLE: B| PROFB[Prev profile]
-  WAIT -->|TEMP: #..#| PROFJ[Jump profile by ID<br/>example: #15#]
+  %% TEMP profile control
+  WAIT -->|TEMP idle A then wait| PROFN[Next profile]
+  WAIT -->|TEMP idle B| PROFB[Prev profile]
+  WAIT -->|TEMP # digits #| PROFJ[Jump profile by ID]
   PROFN --> DISP
   PROFB --> DISP
   PROFJ --> DISP
 
   %% CAL entry (TEMP only)
-  WAIT -->|TEMP+IDLE: A then B (<=800ms)| CAL[ST_CAL<br/>calibration mode]
+  WAIT -->|TEMP idle A then B fast| CAL[ST_CAL]
   CAL --> DISP
 
-  %% Backlight combo
-  WAIT -->|*| BLON[Backlight ON]
-  WAIT -->|* then # (<=1s)| BLOFF[Backlight OFF]
+  %% Backlight
+  WAIT -->|star| BLON[Backlight on]
+  WAIT -->|star then hash| BLOFF[Backlight off]
   BLON --> DISP
   BLOFF --> DISP
-
-  %% Compact legend as a note-node (keep short to avoid render issues)
-  LEG[Key map<br/><br/>
-  DEV: A=min  B=sec  C=Go/Stop  D=Pg<br/>
-  DEV: 1..9 recall  #+1..9 store<br/><br/>
-  TEMP idle: A next (800ms)  B prev<br/>
-  TEMP: #..# jump  A then B enters CAL<br/><br/>
-  Global: * BL on  * then # BL off]
-
-  DISP --- LEG
 ```
  
  
