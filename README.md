@@ -204,23 +204,61 @@ GitHub renders Mermaid diagrams in Markdown.
 
 ```mermaid
 stateDiagram-v2
-  direction TB
+    direction LR
 
-  [*] --> WAIT
+    [*] --> ST_DISPLAY_MAINMENU
+    ST_DISPLAY_MAINMENU --> ST_WAIT: draw current page\n(DEV or TEMP)
 
-  WAIT --> SETM: A (DEV)
-  WAIT --> SETS: B (DEV)
-  SETM --> WAIT: #/ *
-  SETS --> WAIT: #/ *
+    %% -------------------------
+    %% DEV PAGE (PAGE_DEV)
+    %% -------------------------
+    ST_WAIT --> ST_SETTIMING_M: (DEV) A minutes
+    ST_WAIT --> ST_SETTIMING_S: (DEV) B seconds
+    ST_WAIT --> ST_STARTMOTOR:  (DEV) C Go/Stop (DEV)
+    ST_WAIT --> ST_DISPLAY_MAINMENU: (DEV) D page->TEMP
 
-  WAIT --> DEV: C (DEV start)
-  DEV --> WAIT: stop/timeout
+    ST_SETTIMING_M --> ST_DISPLAY_MAINMENU: # confirm / * cancel
+    ST_SETTIMING_S --> ST_DISPLAY_MAINMENU: # confirm / * cancel
 
-  WAIT --> PRE: C (TEMP start)
-  PRE --> WAIT: C (stop)
+    ST_STARTMOTOR --> ST_DISPLAY_MAINMENU: runMotor(START)\nrunMode=DEV
+    ST_WAIT --> ST_IDLE: (DEV) C (while running)\nStop
+    ST_IDLE --> ST_DISPLAY_MAINMENU: runMotor(FORCESTOP)\nrunMode=IDLE
 
-  WAIT --> CAL: A+B (TEMP+IDLE)
-  CAL --> WAIT: C save / D exit
+    %% -------------------------
+    %% TEMP PAGE (PAGE_TEMP)
+    %% -------------------------
+    ST_WAIT --> ST_PREHEAT: (TEMP) C Go/Stop (PREHEAT)
+    ST_PREHEAT --> ST_WAIT: runMode=PREHEAT\nmotor single dir
+    ST_WAIT --> ST_IDLE: (TEMP) C (while preheating)\nStop
+
+    ST_WAIT --> ST_DISPLAY_MAINMENU: (TEMP) D page->DEV
+
+    %% -------------------------
+    %% CALIBRATION (TEMP only)
+    %% -------------------------
+    ST_WAIT --> ST_CAL: (TEMP+IDLE) A+B within 800 ms
+    ST_CAL --> ST_DISPLAY_MAINMENU: C Save
+    ST_CAL --> ST_DISPLAY_MAINMENU: D Exit (discard)
+    ST_CAL --> ST_CAL: A +0.1 / B -0.1
+    ST_CAL --> ST_CAL: # next / * prev
+
+    %% keep the loop explicit (Mermaid likes it)
+    ST_WAIT --> ST_WAIT
+
+    note right of ST_WAIT
+      DEV page:
+        1..9      recall stored step
+        # + 1..9  store current time in step
+      TEMP page:
+        A next profile (A-alone)
+        B prev profile
+        #..# jump to profile id (e.g. #15#)
+        0 toggle diag
+      Global:
+        * backlight ON
+        * + # backlight OFF
+    end note
+
 ```
 
 flowchart LR
