@@ -204,44 +204,33 @@ GitHub renders Mermaid diagrams in Markdown.
 
 ```mermaid
 stateDiagram-v2
-  direction LR
+  direction TB
 
-  state "PAGE_DEV" as DEVPG
-  state "PAGE_TEMP" as TEMPPG
+  [*] --> WAIT
 
-  DEVPG --> TEMPPG: D (toggle page)
-  TEMPPG --> DEVPG: D (toggle page)
+  WAIT --> SETM: A (DEV)
+  WAIT --> SETS: B (DEV)
+  SETM --> WAIT: #/ *
+  SETS --> WAIT: #/ *
 
-  state "ST_WAIT" as WAIT
-  state "Set minutes\nST_SETTIMING_M" as SETM
-  state "Set seconds\nST_SETTIMING_S" as SETS
-  state "DEV run\nST_STARTMOTOR/MODE_DEV" as DEV
-  state "PREHEAT\nST_PREHEAT/MODE_PREHEAT" as PRE
-  state "CAL\nST_CAL" as CAL
+  WAIT --> DEV: C (DEV start)
+  DEV --> WAIT: stop/timeout
 
-  WAIT --> SETM: (DEV page) A
-  WAIT --> SETS: (DEV page) B
-  SETM --> WAIT: # (finish) / * (cancel)
-  SETS --> WAIT: # (finish) / * (cancel)
+  WAIT --> PRE: C (TEMP start)
+  PRE --> WAIT: C (stop)
 
-  WAIT --> DEV: (DEV page) C (Go)
-  DEV --> WAIT: auto stop / C (Stop)
-
-  WAIT --> PRE: (TEMP page) C (Start PREHEAT)
-  PRE --> WAIT: C (Stop PREHEAT)
-
-  WAIT --> CAL: (TEMP+IDLE) A then B <=800ms
-  CAL --> WAIT: D (exit discard) / C (save)
-
-  note right of WAIT
-    TEMP+IDLE:
-      A alone (timeout) -> next profile
-      B alone -> prev profile
-      #..# -> jump profile id
-      0 -> diag toggle
-  end note
+  WAIT --> CAL: A+B (TEMP+IDLE)
+  CAL --> WAIT: C save / D exit
 ```
 
+flowchart LR
+  DEVPG[PAGE_DEV] <-->|D| TEMPPG[PAGE_TEMP]
+
+  DEVPG --> DEVK["A: minutes\nB: seconds\nC: Go/Stop DEV\n1..9: recall step\n#: store step"]
+  TEMPPG --> TEMPK["A: next profile\nB: prev profile\nA+B: CAL (only IDLE)\nC: Preheat start/stop\n#..#: jump profile\n0: diag\nD: back to DEV"]
+
+  GLOBAL["Global:\n*: backlight on\n* then #: backlight off"] --- DEVPG
+  GLOBAL --- TEMPPG
 -------------------------------------------------------------------------------
 
 ## How it operates (typical workflow)
