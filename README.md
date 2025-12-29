@@ -259,7 +259,8 @@ stateDiagram-v2
 
 ```
 
-```flowchart LR
+```mermaid
+flowchart LR
   DEVPG[PAGE_DEV] <-->|D| TEMPPG[PAGE_TEMP]
 
   DEVPG --> DEVK["A: minutes\nB: seconds\nC: Go/Stop DEV\n1..9: recall step\n#: store step"]
