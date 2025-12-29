@@ -263,13 +263,74 @@ Changing Displays:
 
 ```mermaid
 flowchart LR
-  DEVPG[PAGE_DEV] <-->|D| TEMPPG[PAGE_TEMP]
 
-  DEVPG --> DEVK["A: minutes\nB: seconds\nC: Go/Stop DEV\n1..9: recall step\n#: store step"]
-  TEMPPG --> TEMPK["A: next profile\nB: prev profile\nA+B: CAL (only IDLE)\nC: Preheat start/stop\n#..#: jump profile\n0: diag\nD: back to DEV"]
+  %% -------------------------
+  %% Core state machine
+  %% -------------------------
+  BOOT([Boot]) --> DISP[ST_DISPLAY_MAINMENU<br/>render page + menu]
+  DISP --> WAIT[ST_WAIT<br/>key handling]
 
-  GLOBAL["Global:\n*: backlight on\n* then #: backlight off"] --- DEVPG
-  GLOBAL --- TEMPPG
+  WAIT --> SETM[ST_SETTIMING_M<br/>set minutes]
+  WAIT --> SETS[ST_SETTIMING_S<br/>set seconds]
+  WAIT --> START[ST_STARTMOTOR]
+  WAIT --> IDLE[ST_IDLE<br/>(force stop)]
+  SETM --> DISP
+  SETS --> DISP
+  START --> DISP
+  IDLE --> DISP
+  WAIT --> DISP
+
+  %% -------------------------
+  %% Pages (DEV / TEMP)
+  %% -------------------------
+  WAIT -->|D (idle)| TOG[Toggle page<br/>DEV <-> TEMP]
+  TOG --> DISP
+
+  %% -------------------------
+  %% DEV page shortcuts
+  %% -------------------------
+  WAIT -->|DEV: 1..9| DEVREC[Recall stored step<br/>t = step[i]]
+  WAIT -->|DEV: # then 1..9| DEVSTO[Store current time<br/>into step[i]]
+  DEVREC --> DISP
+  DEVSTO --> DISP
+
+  %% -------------------------
+  %% TEMP page profile selection
+  %% -------------------------
+  WAIT -->|TEMP+IDLE: A (after 800ms)| PROFN[Next profile]
+  WAIT -->|TEMP+IDLE: B| PROFB[Prev profile]
+  WAIT -->|TEMP: #..#| PROFJ[Jump profile by ID<br/>example: #15#]
+  PROFN --> DISP
+  PROFB --> DISP
+  PROFJ --> DISP
+
+  %% -------------------------
+  %% CAL entry (TEMP only)
+  %% -------------------------
+  WAIT -->|TEMP+IDLE: A then B (<=800ms)| CAL[ST_CAL<br/>calibration mode]
+  CAL --> DISP
+
+  %% -------------------------
+  %% Backlight combo
+  %% -------------------------
+  WAIT -->|*| BLON[Backlight ON]
+  WAIT -->|* then # (<=1s)| BLOFF[Backlight OFF]
+  BLON --> DISP
+  BLOFF --> DISP
+
+  %% -------------------------
+  %% Legend / key map (compact)
+  %% -------------------------
+  LEG["Keys (context dependent)<br/><br/>
+  DEV page:<br/>
+  A: minutes | B: seconds | C: Go/Stop | D: Pg<br/>
+  1..9 recall step | # then 1..9 store step<br/><br/>
+  TEMP page (idle):<br/>
+  A next profile (after 800ms) | B prev profile<br/>
+  #..# jump by profile ID (e.g. #15#)<br/>
+  A then B (<=800ms) enters CAL<br/><br/>
+  Global:<br/>
+  * backlight ON | * then # backlight OFF"]
 ```
  
  
