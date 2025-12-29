@@ -206,32 +206,40 @@ GitHub renders Mermaid diagrams in Markdown.
 stateDiagram-v2
   direction LR
 
-  [*] --> ST_DISPLAY_MAINMENU
-  ST_DISPLAY_MAINMENU --> ST_WAIT
+  state "PAGE_DEV" as DEVPG
+  state "PAGE_TEMP" as TEMPPG
 
-  state ST_WAIT {
-    [*] --> WAIT
-  }
+  DEVPG --> TEMPPG: D (toggle page)
+  TEMPPG --> DEVPG: D (toggle page)
 
-  ST_WAIT --> ST_SETTIMING_M : DEV page + A
-  ST_WAIT --> ST_SETTIMING_S : DEV page + B
+  state "ST_WAIT" as WAIT
+  state "Set minutes\nST_SETTIMING_M" as SETM
+  state "Set seconds\nST_SETTIMING_S" as SETS
+  state "DEV run\nST_STARTMOTOR/MODE_DEV" as DEV
+  state "PREHEAT\nST_PREHEAT/MODE_PREHEAT" as PRE
+  state "CAL\nST_CAL" as CAL
 
-  ST_WAIT --> ST_STARTMOTOR  : DEV page + C (Go)
-  ST_WAIT --> ST_IDLE        : DEV page + C (Stop)
+  WAIT --> SETM: (DEV page) A
+  WAIT --> SETS: (DEV page) B
+  SETM --> WAIT: # (finish) / * (cancel)
+  SETS --> WAIT: # (finish) / * (cancel)
 
-  ST_WAIT --> ST_PREHEAT     : TEMP page + C (Go)
-  ST_WAIT --> ST_IDLE        : TEMP page + C (Stop)
+  WAIT --> DEV: (DEV page) C (Go)
+  DEV --> WAIT: auto stop / C (Stop)
 
-  ST_WAIT --> ST_CAL         : TEMP page + (A then B)
+  WAIT --> PRE: (TEMP page) C (Start PREHEAT)
+  PRE --> WAIT: C (Stop PREHEAT)
 
-  ST_SETTIMING_M --> ST_DISPLAY_MAINMENU : confirm/cancel
-  ST_SETTIMING_S --> ST_DISPLAY_MAINMENU : confirm/cancel
+  WAIT --> CAL: (TEMP+IDLE) A then B <=800ms
+  CAL --> WAIT: D (exit discard) / C (save)
 
-  ST_STARTMOTOR --> ST_DISPLAY_MAINMENU
-  ST_PREHEAT    --> ST_DISPLAY_MAINMENU
-  ST_IDLE       --> ST_DISPLAY_MAINMENU
-
-  ST_CAL --> ST_DISPLAY_MAINMENU : D (Exit) / C (Save)
+  note right of WAIT
+    TEMP+IDLE:
+      A alone (timeout) -> next profile
+      B alone -> prev profile
+      #..# -> jump profile id
+      0 -> diag toggle
+  end note
 ```
 
 -------------------------------------------------------------------------------
@@ -411,43 +419,6 @@ When editing minutes or seconds, the lower line shows:
 | SET_M/S    | digits    | Type numeric value (minutes or seconds).        |
 | SET_M/S    | `#`       | Finish entry, apply value, return to main menu. |
 | SET_M/S    | `*`       | Cancel entry, keep previous value, return.      |
-
----
-
-## How it operates (typical workflow)
-
-1. Power on the controller. The main menu shows:
-   - Current time (minutes, seconds)
-   - Rmax (current tank RPM)
-   - A compact help line: `A:m B:s C:Run D:Stop`
-
-2. Set the desired development time:
-   - Press `A` to set minutes, type digits, then `#` to confirm.
-   - Press `B` to set seconds, type digits, then `#` to confirm.
-   - The total time in seconds is updated and stored in EEPROM.
-
-3. Optionally store this time in a step slot:
-   - From the main WAIT state, press `#`.
-   - The bottom line shows "Store step: 1...9".
-   - Press a digit 1..9 to store the current time in that slot.
-
-4. To recall a stored development step:
-   - From WAIT, press the desired digit 1..9.
-   - If defined, the time for that step is loaded and shown.
-
-5. To start a run:
-   - Press `C` in WAIT.
-   - The motor starts, rotates CW and CCW with smooth acceleration
-     and braking, and stops automatically when the countdown reaches zero.
-   - The LCD shows `Ravg` and a MM:SS countdown on the last line.
-   - A short beep sounds about 5 s before the end.
-
-6. To stop early:
-   - Press `D`. The motor stops and the timer stops.
-
-7. To use in a fully dark environment:
-   - While in WAIT, press `*` then `#` to turn the LCD backlight OFF.
-   - Later, press `*` to turn the backlight ON again.
 
 ---
 
