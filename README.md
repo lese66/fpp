@@ -259,8 +259,7 @@ stateDiagram-v2
 
 ```
 
-...
-flowchart LR
+```flowchart LR
   DEVPG[PAGE_DEV] <-->|D| TEMPPG[PAGE_TEMP]
 
   DEVPG --> DEVK["A: minutes\nB: seconds\nC: Go/Stop DEV\n1..9: recall step\n#: store step"]
@@ -268,8 +267,7 @@ flowchart LR
 
   GLOBAL["Global:\n*: backlight on\n* then #: backlight off"] --- DEVPG
   GLOBAL --- TEMPPG
-  
-...
+```
  
  
 -------------------------------------------------------------------------------
