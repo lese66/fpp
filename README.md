@@ -263,13 +263,22 @@ Changing Displays:
 
 ```mermaid
 flowchart LR
-  DEV[PAGE_DEV] <-->|D| TEMP[PAGE_TEMP]
-
-  DEV --> DEVK["A: minutes<br/>B: seconds<br/>C: Go/Stop<br/>1..9: recall<br/>#: store"]
-  TEMP --> TEMPK["A: next<br/>B: prev<br/>A+B: CAL (IDLE)<br/>C: preheat<br/>#..#: jump<br/>0: diag"]
-
+  DEV[PAGE_DEV]
+  TEMP[PAGE_TEMP]
   CAL[CAL]
+
+  DEVK["A: minutes <br/> B: seconds <br/> C: Go/Stop <br/> 1..9: recall <br/> #: store"]
+  TEMPK["A: next <br/> B: prev <br/> A+B: CAL (IDLE) <br/> C: preheat <br/> #..#: jump <br/> 0: diag"]
+  CALK["A: +0.1 <br/> B: -0.1 <br/> C: Save <br/> D: Exit discard <br/> #: next item <br/> *: prev item"]
+
+  DEV -->|D| TEMP
+  TEMP -->|D| DEV
+
+  DEV --> DEVK
+  TEMP --> TEMPK
+
   TEMP -->|A+B (IDLE)| CAL
+  CAL --> CALK
   CAL -->|D| TEMP
 ```
  
