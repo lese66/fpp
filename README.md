@@ -205,7 +205,7 @@ stateDiagram-v2
     direction LR
 
     [*] --> ST_DISPLAY_MAINMENU
-    ST_DISPLAY_MAINMENU --> ST_WAIT: draw current page\n(DEV or TEMP)
+    ST_DISPLAY_MAINMENU --> ST_WAIT: draw current page<br/> (DEV or TEMP)
 
     %% -------------------------
     %% DEV PAGE (PAGE_DEV)
@@ -267,15 +267,18 @@ flowchart LR
   TEMP[PAGE_TEMP]
   CAL[CAL]
 
+  DEVK["A: minutes<br/>B: seconds<br/>C: Go/Stop<br/>1..9: recall<br/>#: store"]
+  TEMPK["A: next<br/>B: prev<br/>A+B: CAL (IDLE)<br/>C: preheat<br/>#..#: jump<br/>0: diag"]
+  CALK["A: +0.1<br/>B: -0.1<br/>C: Save<br/>D: Exit discard<br/>#: next item<br/>*: prev item"]
+
   DEV -->|D| TEMP
   TEMP -->|D| DEV
 
-  DEV --> DEVK["A: minutes<br/>B: seconds<br/>C: Go/Stop<br/>1..9: recall<br/>#: store"]
+  DEV --> DEVK
+  TEMP --> TEMPK
 
-  TEMP --> TEMPK["A: next<br/>B: prev<br/>A+B: CAL (IDLE)<br/>C: preheat<br/>#..#: jump<br/>0: diag"]
-
-  TEMP -->|A+B IDLE| CAL
-  CAL --> CALK["A: +0.1<br/>B: -0.1<br/>C: Save<br/>D: Exit discard<br/>#: next item<br/>*: prev item"]
+  TEMP -->|A+B (IDLE)| CAL
+  CAL --> CALK
   CAL -->|D| TEMP
 ```
  
@@ -413,66 +416,7 @@ The main loop performs:
 3. Updates the countdown display while the motor is running.
 4. Handles keypad input depending on the current state.
 
----
 
-## Keypad operation
-
-The controller uses a 4x4 keypad with:
-
-- Digits: 0..9
-- Function keys: `A`, `B`, `C`, `D`, `*`, `#`
-
-### Key commands by state
-
-#### Main waiting state (`ST_WAIT`)
-
-| State | Key        | Effect                                                         |
-|-------|------------|----------------------------------------------------------------|
-| WAIT  | `*`        | If backlight is OFF: turn ON. If ON: arm backlight OFF combo. |
-| WAIT  | `*` then `#` (within 1 s) | Turn LCD backlight OFF (for darkroom use).      |
-| WAIT  | `#`        | Enter "store mode" for development steps.                     |
-| WAIT  | store + `1`..`9` | Store current time (min, sec) into step slot 1..9.      |
-| WAIT  | `1`..`9`   | Recall stored step 1..9 (if defined) and load its timing.     |
-| WAIT  | `A`        | Edit minutes (enter `ST_SETTIMING_M`).                         |
-| WAIT  | `B`        | Edit seconds (enter `ST_SETTIMING_S`).                         |
-| WAIT  | `C`        | Start motor with current timing.                               |
-| WAIT  | `D`        | Stop motor (emergency/normal stop).                            |
-
-Notes:
-
-- Backlight ON: press `*`.
-- Backlight OFF: press `*`, then `#` within about 1 second.
-- Development steps:
-  - Store: `#` then digit 1..9.
-  - Recall: press digit 1..9 directly.
-
-#### Timing edit states (`ST_SETTIMING_M` and `ST_SETTIMING_S`)
-
-When editing minutes or seconds, the lower line shows:
-
-- `# Finish    * Cancel`
-
-| State      | Key       | Effect                                          |
-|------------|-----------|-------------------------------------------------|
-| SET_M/S    | digits    | Type numeric value (minutes or seconds).        |
-| SET_M/S    | `#`       | Finish entry, apply value, return to main menu. |
-| SET_M/S    | `*`       | Cancel entry, keep previous value, return.      |
-
----
-
-## Installation
-
-1. Open the Arduino IDE.
-2. Load the FPP-3 sketch (`.ino`) into the IDE.
-3. Ensure the following libraries are installed:
-   - Wire.h (bundled with Arduino)
-   - EEPROM.h (bundled with Arduino)
-   - LiquidCrystal_I2C (common third-party library)
-   - Keypad (Arduino keypad library)
-4. Select the correct board (Arduino UNO) and serial port.
-5. Compile and upload the sketch.
-6. Connect the USB port of the Arduino UNO to the FPP controller if needed
-   for power and/or debugging via the Serial Monitor.
 
 ---
 
