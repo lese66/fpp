@@ -163,7 +163,7 @@ CAL entry combo (kept as in v5.1 patched UX):
 
 CAL pages include:
 - HTR (heater suggested setting)
-- Bath/Tank/Bottle offsets (Kodak reference)
+- Bath/Tank/Bottle offsets (Kodak thermometer reference)
 
 -------------------------------------------------------------------------------
 
@@ -310,7 +310,7 @@ flowchart LR
 5. Stop PREHEAT:
    - Press `C` again.
 
-### C) Calibration (match DS18B20 to Kodak reference)
+### C) Calibration (match DS18B20 to Kodak thermometer reference)
 1. TEMP page must be active and MODE_IDLE (not preheating, not developing).
 2. Enter CAL:
    - Press `A` then `B` within ~800 ms.
