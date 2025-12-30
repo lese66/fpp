@@ -272,6 +272,8 @@ flowchart LR
   CALK["A: +0.1 <br/> B: -0.1 <br/> C: Save <br/> D: Exit discard <br/> #: next item <br/> *: prev item"]
 
   DEV -->|D| TEMP
+  TEMP -->|D| DEV
+
   DEV --> DEVK
   TEMP --> TEMPK
 
