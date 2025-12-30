@@ -271,8 +271,7 @@ flowchart LR
   TEMPK["A: next <br/> B: prev <br/> A+B: CAL (IDLE) <br/> C: preheat <br/> #..#: jump <br/> 0: diag"]
   CALK["A: +0.1 <br/> B: -0.1 <br/> C: Save <br/> D: Exit discard <br/> #: next item <br/> *: prev item"]
 
-  DEV -->|D| TEMP
-  TEMP -->|D| DEV
+  DEV <-->|D| TEMP
 
   DEV --> DEVK
   TEMP --> TEMPK
